@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днем Рождения, Александр Македонов!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #8A2BE2, #FF69B4, #4169E1, #00BFFF);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            animation: fadeIn 2s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+            background: linear-gradient(to right, #fff, #E6E6FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 3s infinite alternate;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .timer-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 500px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 1.5s ease-out;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .timer-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-value {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #fff, #E6E6FA);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+            min-width: 90px;
+        }
+
+        .timer-label {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-top: 0.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            font-weight: bold;
+        }
+
+        .music-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 500px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 1.5s ease-out;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .music-btn.active {
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .music-status {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            min-height: 1.5rem;
+        }
+
+        /* Скрытый YouTube плеер */
+        #youtube-player {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1000;
+        }
+
+        .quotes-container {
+            margin: 2.5rem auto;
+            max-width: 700px;
+            animation: fadeIn 2.5s ease-out;
+        }
+
+        .quote {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quote:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 0.8rem;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .quote-author {
+            text-align: right;
+            font-weight: bold;
+            color: #E6E6FA;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            font-size: 0.9rem;
+        }
+
+        .decoration {
+            position: absolute;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 20px;
+            opacity: 0.9;
+            border-radius: 2px;
+            animation: fall 6s linear forwards;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            animation: floatText 12s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+            white-space: nowrap;
+            padding: 6px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), rgba(230, 230, 250, 0.1));
+            animation: float 15s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes floatText {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            8% {
+                opacity: 1;
+            }
+            92% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(0) rotate(5deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px)) translateX(20px) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-15px) translateX(8px) rotate(4deg);
+            }
+            50% {
+                transform: translateY(-8px) translateX(-8px) rotate(-4deg);
+            }
+            75% {
+                transform: translateY(-12px) translateX(4px) rotate(2deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 30px rgba(230, 230, 250, 0.7);
+            }
+        }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            animation: fadeIn 3s ease-out;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .interactive-element {
+            margin: 2rem auto;
+            max-width: 500px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .interactive-element:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: scale(1.02);
+        }
+
+        .interactive-element h2 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        #greeting-text {
+            font-size: 1.3rem;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            .timer-value {
+                font-size: 3rem;
+                min-width: 70px;
+            }
+            
+            .timer {
+                gap: 1rem;
+            }
+            
+            .floating-text {
+                font-size: 1.4rem;
+            }
+            
+            .quote-text {
+                font-size: 1rem;
+            }
+            
+            header p {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .music-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированные элементы фона -->
+    <div id="bubbles-container"></div>
+    <div id="confetti-container"></div>
+    <div id="floating-text-container"></div>
+
+    <!-- Скрытый YouTube плеер -->
+    <div id="youtube-player"></div>
+
+    <div class="container">
+        <header>
+            <h1>С Днем Рождения, Александр Македонов!</h1>
+            <p>Поздравляем с этим особенным днем! Желаем великих побед и завоеваний!</p>
+        </header>
+
+        <div class="timer-container">
+            <h2>До подарка осталось:</h2>
+            <div class="timer">
+                <div class="timer-unit">
+                    <div class="timer-value">4</div>
+                    <div class="timer-label">дня</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="music-container">
+            <h2>Музыка для праздника</h2>
+            <div class="music-controls">
+                <button class="music-btn" id="play-btn" title="Воспроизвести">▶</button>
+                <button class="music-btn" id="pause-btn" title="Пауза">⏸</button>
+                <button class="music-btn" id="stop-btn" title="Остановить">⏹</button>
+            </div>
+            <div class="music-status" id="music-status">Музыка готова к воспроизведению</div>
+        </div>
+
+        <div class="interactive-element" id="interactive-greeting">
+            <h2>Нажми для особого поздравления!</h2>
+            <p id="greeting-text">Пусть твой день будет полон радости и великих свершений!</p>
+        </div>
+
+        <div class="quotes-container">
+            <h2>Поздравления от друзей</h2>
+            
+            <div class="quote">
+                <p class="quote-text">Саша, поздравляю с совершеннолетием! Впереди — море возможностей и право самому выбирать свой путь. Пусть он будет ровным, а ветер всегда попутным!</p>
+                <p class="quote-author">- Лёха</p>
+            </div>
+            
+            <div class="quote">
+                <p class="quote-text">с днем рождения лысина ебаная)</p>
+                <p class="quote-author">- Юра</p>
+            </div>
+            
+            <div class="quote">
+                <p class="quote-text">Саша, поздравляю тебя с днем рожденья! Мы знакомы уже почти 5 лет, и все это время ты был очень хорошим другом, понимающим и поддерживающим в трудную минуту. Хочу сказать тебе за это большое спасибо. Пожелать тебе счастья в жизни и с Лизой, здоровья хорошего. И чтобы ты не взрывался от моих тик токов. Чтобы маски крика всегда были у тебя в доме, а не у меня. И чтобы ты больше нечего у меня не ломал. (пожалуйста), С днем рожденья!</p>
+                <p class="quote-author">- Лиза</p>
+            </div>
+            
+            <div class="quote">
+                <p class="quote-text">Саша, поздравляю тебя с днем рожденья! Мы знакомы уже почти 5 лет, и все это время ты был очень хорошим другом, понимающим и поддерживающим в трудную минуту. Хочу сказать тебе за это большое спасибо. Пожелать тебе счастья в жизни и с Лизой здоровья хорошего. И чтобы ты не взрывался от моих тик токов. Чтобы маски крика всегда были у тебя в доме, а не умения. И чтобы ты больше нечего у меня не ломал. (пожалуйста), С днем рожденья!</p>
+                <p class="quote-author">- Вика</p>
+            </div>
+            
+            <div class="quote">
+                <p class="quote-text">ещё в раздумиях</p>
+                <p class="quote-author">- Макар</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>создано по хроникам сырного соуса в 2025</p>
+        </div>
+    </div>
+
+    <!-- YouTube IFrame API -->
+    <script>
+        // Создание пузырьков
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles-container');
+            const bubbleCount = 10;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble', 'decoration');
+                
+                const size = Math.random() * 60 + 30;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.top = `${Math.random() * 100}vh`;
+                
+                bubble.style.animationDelay = `${Math.random() * 15}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // Создание конфетти
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            const confettiCount = 70;
+            const colors = ['#8A2BE2', '#FF69B4', '#4169E1', '#00BFFF', '#9370DB', '#BA55D3'];
+
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti', 'decoration');
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDelay = `${Math.random() * 6}s`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Случайная скорость падения
+                const duration = 4 + Math.random() * 4;
+                confetti.style.animationDuration = `${duration}s`;
+                
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        // Создание плавающего текста
+        function createFloatingText() {
+            const floatingTextContainer = document.getElementById('floating-text-container');
+            const texts = [
+                "С Днем Рождения!",
+                "Александр Македонов!",
+                "Ура!",
+                "Поздравляем!",
+                "Многая лета!",
+                "Процветания!",
+                "Успехов!",
+                "Побед!",
+                "Счастья!",
+                "Здоровья!",
+                "Радости!",
+                "Удачи!",
+                "Гей!"
+            ];
+
+            for (let i = 0; i < 18; i++) {
+                const floatingText = document.createElement('div');
+                floatingText.classList.add('floating-text');
+                floatingText.textContent = texts[Math.floor(Math.random() * texts.length)];
+                
+                // Размещаем текст только по краям, избегая центра (10-35% и 65-90%)
+                const isLeftSide = Math.random() > 0.5;
+                const horizontalPosition = isLeftSide ? 
+                    (10 + Math.random() * 25) : // Левая часть (10-35%)
+                    (65 + Math.random() * 25); // Правая часть (65-90%)
+                
+                floatingText.style.left = `${horizontalPosition}%`;
+                
+                // Увеличиваем скорость анимации
+                const animationDuration = 8 + Math.random() * 8; // 8-16 секунд
+                floatingText.style.animationDuration = `${animationDuration}s`;
+                
+                // Случайная задержка начала анимации
+                floatingText.style.animationDelay = `${Math.random() * 5}s`;
+                
+                floatingTextContainer.appendChild(floatingText);
+            }
+        }
+
+        // Интерактивное поздравление
+        function setupInteractiveGreeting() {
+            const interactiveElement = document.getElementById('interactive-greeting');
+            const greetingText = document.getElementById('greeting-text');
+            
+            const greetings = [
+                "Пусть твой день будет полон радости и великих свершений!",
+                "Желаю завоевать все вершины, которые ты только пожелаешь!",
+                "Пусть твои амбиции ведут тебя к новым победам и достижениям!",
+                "Желаю мудрости Александра Македонского в принятии решений!",
+                "Пусть твоя жизнь будет полна приключений и великих открытий!",
+                "Желаю верных друзей и соратников на твоем жизненном пути!"
+            ];
+            
+            let currentGreeting = 0;
+            
+            interactiveElement.addEventListener('click', function() {
+                currentGreeting = (currentGreeting + 1) % greetings.length;
+                greetingText.textContent = greetings[currentGreeting];
+                
+                // Добавляем анимацию при смене текста
+                greetingText.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    greetingText.style.transform = 'scale(1)';
+                }, 300);
+                
+                // Создаем дополнительные эффекты при клике
+                createClickEffect(event.clientX, event.clientY);
+            });
+        }
+        
+        // Эффект при клике на интерактивный элемент
+        function createClickEffect(x, y) {
+            const colors = ['#8A2BE2', '#FF69B4', '#4169E1', '#00BFFF', '#9370DB'];
+            
+            for (let i = 0; i < 10; i++) {
+                const effect = document.createElement('div');
+                effect.classList.add('confetti');
+                effect.style.left = `${x}px`;
+                effect.style.top = `${y}px`;
+                
+                // Случайная скорость падения
+                const duration = 3 + Math.random() * 3;
+                effect.style.animationDuration = `${duration}s`;
+                
+                effect.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.getElementById('confetti-container').appendChild(effect);
+            }
+        }
+
+        // YouTube Player
+        let player;
+        let isPlaying = false;
+        
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '1',
+                width: '1',
+                videoId: 'rdSXXwkuaT0',
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'iv_load_policy': 3
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            updateMusicStatus('Музыка готова к воспроизведению');
+            
+            // Кнопка воспроизведения
+            document.getElementById('play-btn').addEventListener('click', function() {
+                player.playVideo();
+                setActiveButton(this);
+                updateMusicStatus('Воспроизведение...');
+            });
+            
+            // Кнопка паузы
+            document.getElementById('pause-btn').addEventListener('click', function() {
+                player.pauseVideo();
+                setActiveButton(this);
+                updateMusicStatus('Пауза');
+            });
+            
+            // Кнопка остановки
+            document.getElementById('stop-btn').addEventListener('click', function() {
+                player.stopVideo();
+                setActiveButton(this);
+                updateMusicStatus('Музыка остановлена');
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            const statusElement = document.getElementById('music-status');
+            
+            switch(event.data) {
+                case YT.PlayerState.PLAYING:
+                    updateMusicStatus('Воспроизведение...');
+                    setActiveButton(document.getElementById('play-btn'));
+                    isPlaying = true;
+                    break;
+                case YT.PlayerState.PAUSED:
+                    updateMusicStatus('Пауза');
+                    setActiveButton(document.getElementById('pause-btn'));
+                    isPlaying = false;
+                    break;
+                case YT.PlayerState.ENDED:
+                    updateMusicStatus('Музыка завершена');
+                    clearActiveButtons();
+                    isPlaying = false;
+                    break;
+            }
+        }
+
+        function updateMusicStatus(text) {
+            document.getElementById('music-status').textContent = text;
+        }
+
+        function setActiveButton(button) {
+            // Снимаем активный класс со всех кнопок
+            document.querySelectorAll('.music-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Добавляем активный класс к нажатой кнопке
+            button.classList.add('active');
+        }
+
+        function clearActiveButtons() {
+            document.querySelectorAll('.music-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            createBubbles();
+            createConfetti();
+            createFloatingText();
+            setupInteractiveGreeting();
+            
+            // Анимация при наведении на цитаты
+            const quotes = document.querySelectorAll('.quote');
+            quotes.forEach(quote => {
+                quote.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                quote.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Загрузка YouTube IFrame API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        });
+    </script>
+</body>
+</html>
